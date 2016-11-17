@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="Keywords" content="关键词">
+		<meta name="Description" content="描述">
+		<title>照片墙</title>
+		<style type="text/css">
+			*{margin:0px;padding:0px;}li{list-style:none;}a{text-decoration:none;}
+			html,body{height:100%;}
+			body{overflow:hidden;}
+			#photo{width:90%;height:90%;
+				position:absolute;left:5%;top:5%;
+			}
+			#photo li{width:125px;height:125px;
+			position:absolute;left:0px;top:0px;
+			box-shadow:0 0 2px #ddd;
+			transition:all 1s;
+			
+			}
+			#photo li img{
+				transform:scale(0.95);transition:all 1s;
+			}
+		</style>
+	</head>
+	<body>
+		<ul id="photo">
+		</ul>
+
+		
+		
+		<!-- 脚本的开始 -->
+		<script type="text/javascript" src="js/jquery-1.12.1.min.js"></script>
+		<script type="text/javascript">
+			$(function(){
+				
+				var $photo = $("#photo");
+				var onOff = true;
+				var $li,$img;
+				init();
+				$img = $("#photo li img");
+				$li = $("#photo li");
+				liPosition();
+				liRot();
+				$(window).on("resize",function(){
+					liPosition();
+					
+				})
+				$li.click(function(){
+					if (onOff)
+					{
+						var index = $(this).index();
+						$img.each(function(i){
+						
+							$img.css({"transform":"scale(1)"})
+							setTimeout(function(){
+								liClick();
+								$img.fadeOut(1000);
+								$li.css("backgroundImage","url('img/big/"+(index+1)+".jpg')")
+							},100)
+						})
+						$(window).off("resize");
+						$(window).resize(liClick);
+						onOff = !onOff;
+					}else{
+						$img.fadeIn(1000,function(){
+							$li.css('backgroundImage' , '');
+							$(this).css('transform' , 'scale(0.9)');
+						});
+						liPosition();
+						liRot();
+						$(window).off('resize').resize(liPosition);
+						$('#btn').hide();
+						onOff = !onOff;
+					}
+					
+				})
+				function init(){
+					for (i=0;i<24; i++ )
+					{
+						var $li = $("<li><img src='img/"+(i+1)+".jpg'></li>");
+						$photo.append($li);
+					}
+				}
+				function liPosition(){
+					var pX = $photo.width();
+					var pY = $photo.height();
+
+					var dX = (pX - 750)/5;
+					var dY = (pY - 500)/3;
+					$li.each(function(i){
+						var iX = i%6;
+						var iY = parseInt(i/6);
+						$(this).css({
+							left:iX*dX+(125*iX)+"px",
+							top:iY*dY+(125*iY)+"px",
+							backgroundPosition:""+(-125*iX)+"px "+(-125*iY)+"px"
+						})
+					})
+				}
+				function liClick(){
+					var pX = $photo.width();
+					var pY = $photo.height();
+					$li.each(function(i){
+						var l =(pX-750)/2;
+						var t =(pY-500)/2;
+						var iX = i%6;
+						var iY = parseInt(i/6);
+						$(this).css({
+							left:l+(125*iX)+"px",
+							top:t+(125*iY)+"px",
+							transform:"rotate(0deg)"
+						})
+					})
+				}
+				function liRot(){
+					$li.each(function(i){
+						var rot = (Math.random()-0.5)*60
+						$(this).css(
+							"transform","rotate("+rot+"deg)"
+						)
+					})
+				}
+			})
+		</script>
+
+	</body>
+</html>
